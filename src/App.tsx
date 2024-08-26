@@ -14,7 +14,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { cn } from "./lib/utils";
 import { useDragHandle } from "./use-drag-handle";
 import { DraggableTableCell } from "./components/drag-handle";
 
