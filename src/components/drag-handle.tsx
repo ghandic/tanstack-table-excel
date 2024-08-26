@@ -28,11 +28,6 @@ export function DraggableTableCell<T>({
       dragHandle.setSelectedCells([]);
       dragHandle.setPreviewCells([]);
     },
-    onMouseDown: (e: React.MouseEvent<HTMLTableCellElement>) => {
-      dragHandle.handleMouseDown(e, cell);
-    },
-    onTouchStart: (e: React.TouchEvent<HTMLTableCellElement>) =>
-      dragHandle.handleMouseDown(e, cell),
   };
 
   const dragHandleDiv = dragHandle.isAutofillCell(cell) && (
