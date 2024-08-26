@@ -116,7 +116,9 @@ export default function App() {
   });
 
   const handleMouseDown = (
-    _: React.MouseEvent<HTMLDivElement, MouseEvent>,
+    _:
+      | React.MouseEvent<HTMLDivElement, MouseEvent>
+      | React.TouchEvent<HTMLDivElement>,
     cellInfo: Cell<Person, unknown>
   ) => {
     setDragging(true);
@@ -202,13 +204,21 @@ export default function App() {
     setPreviewCells(newPreviewCells);
   };
   const handleMouseMove = (
-    e: React.MouseEvent<HTMLTableCellElement>,
+    e:
+      | React.MouseEvent<HTMLTableCellElement>
+      | React.TouchEvent<HTMLTableCellElement>,
     cellInfo: Cell<Person, unknown>
   ) => {
     if (dragging && dragStartCell && cellInfo) {
       const cellRect = e.currentTarget.getBoundingClientRect();
-      const mouseX = e.clientX - cellRect.left;
-      const mouseY = e.clientY - cellRect.top;
+      const mouseX =
+        "touches" in e
+          ? e.touches[0].clientX - cellRect.left
+          : e.clientX - cellRect.left;
+      const mouseY =
+        "touches" in e
+          ? e.touches[0].clientY - cellRect.top
+          : e.clientY - cellRect.top;
 
       const isOverHalfWidth = mouseX > cellRect.width / 2;
       const isOverHalfHeight = mouseY > cellRect.height / 2;
@@ -247,8 +257,11 @@ export default function App() {
     };
 
     document.addEventListener("mouseup", handleMouseUp);
+    document.addEventListener("touchend", handleMouseUp);
+
     return () => {
       document.removeEventListener("mouseup", handleMouseUp);
+      document.removeEventListener("touchend", handleMouseUp);
     };
   }, [dragging, dragStartCell, dragEndCell, performAutofill]);
 
@@ -362,6 +375,7 @@ export default function App() {
                         : ""
                     )}
                     onMouseMove={(e) => handleMouseMove(e, cell)}
+                    onTouchMove={(e) => handleMouseMove(e, cell)}
                     onClick={() => {
                       setAutofillCell(cell);
                       setSelectedCells([]);
@@ -373,6 +387,7 @@ export default function App() {
                       <div
                         className="absolute z-10 bottom-[-5px] right-[-5px] w-2.5 h-2.5 border-2 border-[#107c41] bg-white cursor-pointer"
                         onMouseDown={(e) => handleMouseDown(e, cell)}
+                        onTouchStart={(e) => handleMouseDown(e, cell)}
                       />
                     )}
                   </TableCell>
